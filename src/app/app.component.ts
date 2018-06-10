@@ -1,10 +1,26 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, ViewChild, Input } from '@angular/core';
+import { MatPaginator, MatSort } from '@angular/material';
+import { TableDataSource } from './table-datasource';
 
 @Component({
-  selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
 })
-export class AppComponent {
-  title = 'app';
+export class AppComponent implements OnInit {
+  @Input() data;
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatSort) sort: MatSort;
+  dataSource: TableDataSource;
+
+  /** Columns displayed in the table. Columns IDs can be added, removed, or reordered. */
+  displayedColumns = ['id', 'name'];
+
+  ngOnInit() {
+    let inputData;
+    try {
+      inputData = JSON.parse(this.data);
+    } catch {
+      inputData = this.data;
+    }
+    this.dataSource = new TableDataSource(this.paginator, this.sort, inputData);
+  }
 }
